@@ -1,0 +1,409 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 10%;
+    --foreground: 210 40% 98%;
+    --card: 220 19% 13%;
+    --card-foreground: 210 40% 98%;
+    --primary: 200 100% 50%;
+    --primary-foreground: 220 20% 10%;
+    --secondary: 280 100% 50%;
+    --accent: 180 100% 45%;
+    --muted: 220 15% 20%;
+    --border: 220 13% 25%;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0f1419 100%);
+    color: #e0e6ed;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00d4ff, #00ff88, #00d4ff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 3s ease infinite;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+
+  .data-info {
+    color: #00ff88;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+
+  .upload-section {
+    width: 100%;
+  }
+
+  .upload-options {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    gap: 2rem;
+  }
+
+  .divider {
+    position: relative;
+    padding: 0 1rem;
+  }
+
+  .divider span {
+    color: #64748b;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #334155, transparent);
+  }
+
+  .divider::before {
+    left: -50px;
+  }
+
+  .divider::after {
+    right: -50px;
+  }
+
+  .file-upload {
+    background: rgba(30, 41, 59, 0.5);
+    border: 2px dashed #00d4ff;
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .file-upload:hover,
+  .file-upload.dragging {
+    border-color: #00ff88;
+    background: rgba(30, 41, 59, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+  }
+
+  .file-upload.dragging {
+    border-width: 3px;
+    animation: pulse 1s infinite;
+  }
+
+  .file-upload svg {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+    color: #00d4ff;
+  }
+
+  .file-upload label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .file-upload label span {
+    color: #e0e6ed;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .file-upload label p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+
+  .upload-btn {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, #00d4ff33, #00ff8833);
+    border: 1px solid #00d4ff;
+    border-radius: 6px;
+    color: #00d4ff !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+  }
+
+  .upload-btn:hover {
+    background: linear-gradient(135deg, #00d4ff55, #00ff8855);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+  }
+
+  .upload-hint {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #00d4ff, #00ff88);
+    color: #0f1419;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: #00d4ff;
+    border: 1px solid #00d4ff;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateX(-5px);
+  }
+
+  .stats-panel {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.6));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-label {
+    color: #64748b;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-value {
+    color: #00d4ff;
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .chart-container {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.6));
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .chart-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.2);
+    border-color: rgba(0, 212, 255, 0.4);
+  }
+
+  .chart-title {
+    color: #00d4ff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .chart-note {
+    color: #64748b;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    text-align: right;
+    font-style: italic;
+  }
+
+  .chart-container.full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* D3 Chart Styles */
+  .axis text {
+    fill: #64748b;
+    font-size: 11px;
+  }
+
+  .axis path,
+  .axis line {
+    stroke: #334155;
+  }
+
+  .grid line {
+    stroke: #1e293b;
+    stroke-opacity: 0.7;
+  }
+
+  .tooltip {
+    position: absolute;
+    padding: 10px;
+    background: rgba(15, 20, 25, 0.95);
+    border: 1px solid #00d4ff;
+    border-radius: 6px;
+    color: #e0e6ed;
+    font-size: 12px;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+
+  /* Progress Bar */
+  .upload-progress {
+    width: 100%;
+    padding: 2rem;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #00ff88);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  }
+
+  .upload-progress p {
+    color: #00d4ff;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  /* Loading Animation */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #00d4ff;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00ff88;
+  }
+}
