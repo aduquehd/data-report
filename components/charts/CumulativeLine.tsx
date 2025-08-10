@@ -282,7 +282,7 @@ export default function CumulativeLine({
   }, [data, dimensions])
 
   return (
-    <div className="chart-container full-width relative">
+    <div id="cumulative-chart" className="chart-container full-width relative">
       <div className="absolute top-4 right-4 z-10">
         <div className="group relative">
           <Info className="w-5 h-5 text-gray-500 hover:text-gray-300 cursor-help transition-colors" />

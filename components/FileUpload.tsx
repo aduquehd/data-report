@@ -41,11 +41,23 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
         setProgress(e.data.progress)
       } else if (e.data.complete) {
         const data = e.data.data as Record<string, unknown>[]
-        const filteredData = data.map((row) => ({
-          ...row,
-          timestamp: new Date(row['@timestamp'] as string),
-          value: Object.values(row).find(v => typeof v === 'number') as number || 1,
-        }))
+        const filteredData = data.map((row) => {
+          // Find the first numeric column (excluding @timestamp)
+          let value = 1 // Default to 1 for counting occurrences
+          
+          for (const [key, val] of Object.entries(row)) {
+            if (key !== '@timestamp' && typeof val === 'number' && !isNaN(val)) {
+              value = val
+              break
+            }
+          }
+          
+          return {
+            ...row,
+            timestamp: new Date(row['@timestamp'] as string),
+            value,
+          }
+        })
 
         // Process large dataset for optimization
         const processed = processLargeDataset(filteredData)
@@ -99,11 +111,23 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
             if (!row['@timestamp']) return false
             const timestamp = new Date(row['@timestamp'] as string)
             return !isNaN(timestamp.getTime())
-          }).map((row) => ({
-            ...row,
-            timestamp: new Date(row['@timestamp'] as string),
-            value: Object.values(row).find(v => typeof v === 'number') as number || 1,
-          }))
+          }).map((row) => {
+            // Find the first numeric column (excluding @timestamp)
+            let value = 1 // Default to 1 for counting occurrences
+            
+            for (const [key, val] of Object.entries(row)) {
+              if (key !== '@timestamp' && typeof val === 'number' && !isNaN(val)) {
+                value = val
+                break
+              }
+            }
+            
+            return {
+              ...row,
+              timestamp: new Date(row['@timestamp'] as string),
+              value,
+            }
+          })
 
           // Process large dataset for optimization
           const processed = processLargeDataset(filteredData)

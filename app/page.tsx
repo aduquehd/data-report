@@ -5,8 +5,13 @@ import dynamic from 'next/dynamic'
 import FileUpload from '@/components/FileUpload'
 import StatisticsPanel from '@/components/StatisticsPanel'
 import ExportButton from '@/components/ExportButton'
+import DownloadImagesButton from '@/components/DownloadImagesButton'
+import ChartSelector from '@/components/ChartSelector'
+import ChartSelectorModal from '@/components/ChartSelectorModal'
 import { ParsedData } from '@/lib/types'
 import { getDataSubset } from '@/lib/dataProcessor'
+import { useChartSelection } from '@/lib/useChartSelection'
+import { Settings2 } from 'lucide-react'
 
 const ThirtyMinDistribution = dynamic(() => import('@/components/charts/ThirtyMinDistribution'), { ssr: false })
 const WeekdayActivity = dynamic(() => import('@/components/charts/WeekdayActivity'), { ssr: false })
@@ -19,6 +24,8 @@ const CumulativeLine = dynamic(() => import('@/components/charts/CumulativeLine'
 
 export default function Home() {
   const [parsedData, setParsedData] = useState<ParsedData | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { selectedCharts, updateSelection, getEnabledChartIds, isLoaded } = useChartSelection()
 
   // Use optimized data for different charts
   const chartData = useMemo(() => {
@@ -70,7 +77,18 @@ export default function Home() {
         </header>
 
         {!parsedData ? (
-          <FileUpload onDataLoaded={setParsedData} />
+          <>
+            <FileUpload onDataLoaded={setParsedData} />
+            {isLoaded && (
+              <div className="chart-selector-wrapper">
+                <ChartSelector
+                  selectedCharts={selectedCharts}
+                  onSelectionChange={updateSelection}
+                  compact
+                />
+              </div>
+            )}
+          </>
         ) : (
           <>
             <div className="controls">
@@ -80,25 +98,62 @@ export default function Home() {
               >
                 ← Upload New File
               </button>
-              <ExportButton />
+              <div className="controls-right">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="btn btn-settings"
+                  title="Chart Display Settings"
+                >
+                  <Settings2 size={18} />
+                  <span>Display Settings</span>
+                </button>
+                <DownloadImagesButton 
+                  chartIds={getEnabledChartIds()}
+                  disabled={!chartData}
+                />
+                <ExportButton />
+              </div>
             </div>
 
             <StatisticsPanel data={parsedData.data} />
 
-            {chartData && (
+            {chartData && isLoaded && (
               <div id="charts-container" style={{ background: 'linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0f1419 100%)', padding: '20px', borderRadius: '12px' }}>
                 <div className="charts-grid">
-                  <ThirtyMinDistribution data={chartData.histogram} />
-                  <WeekdayActivity data={chartData.default} />
-                  <RecordsPerDay data={chartData.default} />
-                  <Heatmap data={chartData.heatmap} />
-                  <BoxPlot data={chartData.default} />
-                  <WeeklyPattern data={chartData.default} />
-                  <RadarChart data={chartData.default} />
+                  {selectedCharts.find(c => c.id === 'thirty-min')?.enabled && (
+                    <ThirtyMinDistribution data={chartData.histogram} />
+                  )}
+                  {selectedCharts.find(c => c.id === 'weekday')?.enabled && (
+                    <WeekdayActivity data={chartData.default} />
+                  )}
+                  {selectedCharts.find(c => c.id === 'heatmap')?.enabled && (
+                    <Heatmap data={chartData.heatmap} />
+                  )}
+                  {selectedCharts.find(c => c.id === 'boxplot')?.enabled && (
+                    <BoxPlot data={chartData.default} />
+                  )}
+                  {selectedCharts.find(c => c.id === 'weekly')?.enabled && (
+                    <WeeklyPattern data={chartData.default} />
+                  )}
+                  {selectedCharts.find(c => c.id === 'radar')?.enabled && (
+                    <RadarChart data={chartData.default} />
+                  )}
                 </div>
-                <CumulativeLine data={chartData.cumulative} />
+                {selectedCharts.find(c => c.id === 'records-per-day')?.enabled && (
+                  <RecordsPerDay data={chartData.default} />
+                )}
+                {selectedCharts.find(c => c.id === 'cumulative')?.enabled && (
+                  <CumulativeLine data={chartData.cumulative} />
+                )}
               </div>
             )}
+
+            <ChartSelectorModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              selectedCharts={selectedCharts}
+              onSave={updateSelection}
+            />
           </>
         )}
       </div>

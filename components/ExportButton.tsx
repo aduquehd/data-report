@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
+import { FileDown } from 'lucide-react'
 
 export default function ExportButton() {
   const [isExporting, setIsExporting] = useState(false)
@@ -138,17 +139,14 @@ export default function ExportButton() {
   return (
     <button
       onClick={exportToPDF}
-      className="btn btn-primary"
+      className="btn btn-export-pdf"
       disabled={isExporting}
+      title="Export to PDF"
     >
-      {isExporting ? (
-        <>
-          <span className="loading-spinner"></span>
-          Exporting...
-        </>
-      ) : (
-        'Export to PDF'
-      )}
+      <FileDown size={18} />
+      <span>
+        {isExporting ? 'Exporting...' : 'Export to PDF'}
+      </span>
     </button>
   )
 }

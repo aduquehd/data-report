@@ -161,10 +161,11 @@ export default function WeekdayActivity({
     // Add percentage labels
     bars.append('text')
       .attr('x', d => (xScale(d.dayShort) || 0) + xScale.bandwidth() / 2)
-      .attr('y', d => yScale(d.count) + 15)
+      .attr('y', d => yScale(d.count) + 20)
       .attr('text-anchor', 'middle')
-      .style('fill', '#64748b')
-      .style('font-size', '10px')
+      .style('fill', '#e2e8f0')
+      .style('font-size', '13px')
+      .style('font-weight', '600')
       .text(d => `${d.percentage.toFixed(1)}%`)
 
     // Add axes
@@ -275,7 +276,7 @@ export default function WeekdayActivity({
   }, [data, dimensions])
 
   return (
-    <div className="chart-container relative">
+    <div id="weekday-chart" className="chart-container relative">
       <div className="absolute top-4 right-4 z-10">
         <div className="group relative">
           <Info className="w-5 h-5 text-gray-500 hover:text-gray-300 cursor-help transition-colors" />

@@ -13,7 +13,7 @@ interface RecordsPerDayProps {
 export default function RecordsPerDay({ 
   data, 
   dimensions = {
-    width: 600,
+    width: 1200,
     height: 350,
     margin: { top: 20, right: 30, bottom: 60, left: 60 }
   }
@@ -160,7 +160,7 @@ export default function RecordsPerDay({
   }, [data, dimensions])
 
   return (
-    <div className="chart-container relative">
+    <div id="records-per-day-chart" className="chart-container full-width relative">
       <div className="absolute top-4 right-4 z-10">
         <div className="group relative">
           <Info className="w-5 h-5 text-gray-500 hover:text-gray-300 cursor-help transition-colors" />

@@ -58,11 +58,11 @@ export default function Heatmap({
       .domain([0, maxValue])
       .interpolator((t) => {
         if (t === 0) return '#0a0e27' // Very dark blue for zero
-        if (t < 0.2) return d3.interpolate('#0a0e27', '#1e3a5f')(t * 5)
-        if (t < 0.4) return d3.interpolate('#1e3a5f', '#00d4ff')((t - 0.2) * 5)
-        if (t < 0.6) return d3.interpolate('#00d4ff', '#00ff88')((t - 0.4) * 5)
-        if (t < 0.8) return d3.interpolate('#00ff88', '#ffff00')((t - 0.6) * 5)
-        return d3.interpolate('#ffff00', '#ff00ff')((t - 0.8) * 5)
+        if (t < 0.25) return d3.interpolate('#0a0e27', '#1e293b')(t * 4) // Dark slate
+        if (t < 0.45) return d3.interpolate('#1e293b', '#3b82f6')((t - 0.25) * 5) // Blue
+        if (t < 0.65) return d3.interpolate('#3b82f6', '#10b981')((t - 0.45) * 5) // Emerald
+        if (t < 0.85) return d3.interpolate('#10b981', '#f59e0b')((t - 0.65) * 5) // Amber
+        return d3.interpolate('#f59e0b', '#ef4444')((t - 0.85) * 6.67) // Red
       })
 
     const g = svg.append('g')
@@ -154,12 +154,12 @@ export default function Heatmap({
 
     // Add gradient stops matching the color scale
     const gradientStops = [
-      { offset: '0%', color: '#0a0e27' },
-      { offset: '20%', color: '#1e3a5f' },
-      { offset: '40%', color: '#00d4ff' },
-      { offset: '60%', color: '#00ff88' },
-      { offset: '80%', color: '#ffff00' },
-      { offset: '100%', color: '#ff00ff' }
+      { offset: '0%', color: '#0a0e27' },      // Very dark blue
+      { offset: '25%', color: '#1e293b' },     // Dark slate
+      { offset: '45%', color: '#3b82f6' },     // Blue
+      { offset: '65%', color: '#10b981' },     // Emerald
+      { offset: '85%', color: '#f59e0b' },     // Amber
+      { offset: '100%', color: '#ef4444' }     // Red
     ]
 
     gradientStops.forEach(stop => {
@@ -230,7 +230,7 @@ export default function Heatmap({
   }, [data, dimensions])
 
   return (
-    <div className="chart-container relative">
+    <div id="heatmap-chart" className="chart-container relative">
       <div className="absolute top-4 right-4 z-10">
         <div className="group relative">
           <Info className="w-5 h-5 text-gray-500 hover:text-gray-300 cursor-help transition-colors" />

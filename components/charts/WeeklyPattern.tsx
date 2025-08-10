@@ -56,9 +56,37 @@ export default function WeeklyPattern({
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`)
 
-    const colorScale = d3.scaleSequential()
-      .domain([0, 6])
-      .interpolator(d3.interpolateTurbo)
+    // Futuristic neon color palette
+    const colors = [
+      '#00ffff', // Sunday - Electric Cyan
+      '#ff00ff', // Monday - Neon Magenta
+      '#00ff88', // Tuesday - Matrix Green
+      '#ff6b00', // Wednesday - Neon Orange
+      '#bd00ff', // Thursday - Electric Purple
+      '#00ffaa', // Friday - Teal Glow
+      '#ff0099'  // Saturday - Hot Pink
+    ]
+
+    // Add gradient definitions for each bar
+    const defs = svg.append('defs')
+    colors.forEach((color, i) => {
+      const gradient = defs.append('linearGradient')
+        .attr('id', `weekly-gradient-${i}`)
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '0%')
+        .attr('y2', '100%')
+      
+      gradient.append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', color)
+        .attr('stop-opacity', 1)
+      
+      gradient.append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', color)
+        .attr('stop-opacity', 0.4)
+    })
 
     g.selectAll('.bar')
       .data(weekData)
@@ -68,8 +96,42 @@ export default function WeeklyPattern({
       .attr('y', d => yScale(d.count))
       .attr('width', xScale.bandwidth())
       .attr('height', d => innerHeight - yScale(d.count))
-      .attr('fill', d => colorScale(d.index))
-      .attr('opacity', 0.8)
+      .attr('fill', d => `url(#weekly-gradient-${d.index})`)
+      .attr('stroke', d => colors[d.index])
+      .attr('stroke-width', 1)
+      .attr('stroke-opacity', 0.8)
+      .style('filter', (d: any) => 'drop-shadow(0 0 8px ' + colors[d.index] + ')')
+      .attr('rx', 2)
+      .attr('ry', 2)
+      .on('mouseover', function(event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('stroke-width', 2)
+          .style('filter', 'drop-shadow(0 0 16px ' + colors[d.index] + ')')
+          .attr('transform', `translate(0, -2)`)
+      })
+      .on('mouseout', function(event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('stroke-width', 1)
+          .style('filter', 'drop-shadow(0 0 8px ' + colors[d.index] + ')')
+          .attr('transform', 'translate(0, 0)')
+      })
+
+    // Add value labels on bars
+    g.selectAll('.label')
+      .data(weekData)
+      .enter().append('text')
+      .attr('class', 'label')
+      .attr('x', d => (xScale(d.day) || 0) + xScale.bandwidth() / 2)
+      .attr('y', d => yScale(d.count) - 5)
+      .attr('text-anchor', 'middle')
+      .style('fill', '#e2e8f0')
+      .style('font-size', '12px')
+      .style('font-weight', '600')
+      .text(d => d.count)
 
     g.append('g')
       .attr('class', 'axis')
@@ -83,7 +145,7 @@ export default function WeeklyPattern({
   }, [data, dimensions])
 
   return (
-    <div className="chart-container relative">
+    <div id="weekly-chart" className="chart-container relative">
       <div className="absolute top-4 right-4 z-10">
         <div className="group relative">
           <Info className="w-5 h-5 text-gray-500 hover:text-gray-300 cursor-help transition-colors" />
