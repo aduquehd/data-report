@@ -23,6 +23,9 @@ export default function CumulativeLine({
   useEffect(() => {
     if (!svgRef.current || data.length === 0) return
 
+    // Clean up any existing tooltips
+    d3.selectAll('.cumulative-tooltip').remove()
+    
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
 
@@ -132,9 +135,9 @@ export default function CumulativeLine({
       .attr('fill', '#00ff88')
       .style('filter', 'drop-shadow(0px 0px 4px rgba(0, 255, 136, 0.8))')
 
-    // Add tooltip
+    // Add tooltip with unique class
     const tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip')
+      .attr('class', 'cumulative-tooltip')
       .style('position', 'absolute')
       .style('visibility', 'hidden')
       .style('background-color', 'rgba(0, 0, 0, 0.9)')
@@ -276,7 +279,7 @@ export default function CumulativeLine({
 
     // Cleanup tooltip on unmount
     return () => {
-      d3.select('body').selectAll('.tooltip').remove()
+      d3.selectAll('.cumulative-tooltip').remove()
     }
 
   }, [data, dimensions])
