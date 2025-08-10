@@ -129,7 +129,7 @@ export default function RadarChart({
           .style('left', (event.pageX + 10) + 'px')
           .style('top', (event.pageY - 28) + 'px')
       })
-      .on('mouseout', function(event, d) {
+      .on('mouseout', function() {
         d3.select(this)
           .transition()
           .duration(200)

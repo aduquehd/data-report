@@ -15,7 +15,7 @@ export default function CumulativeLine({
   dimensions = {
     width: 1250,
     height: 350,
-    margin: { top: 20, right: 30, bottom: 40, left: 60 }
+    margin: { top: 20, right: 30, bottom: 40, left: 80 }
   }
 }: CumulativeLineProps) {
   const svgRef = useRef<SVGSVGElement>(null)
@@ -269,7 +269,7 @@ export default function CumulativeLine({
     // Add Y axis label
     g.append('text')
       .attr('transform', 'rotate(-90)')
-      .attr('y', -45)
+      .attr('y', -55)
       .attr('x', -(innerHeight / 2))
       .style('text-anchor', 'middle')
       .style('fill', '#9ca3af')

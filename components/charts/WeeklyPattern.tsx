@@ -100,7 +100,7 @@ export default function WeeklyPattern({
       .attr('stroke', d => colors[d.index])
       .attr('stroke-width', 1)
       .attr('stroke-opacity', 0.8)
-      .style('filter', (d: any) => 'drop-shadow(0 0 8px ' + colors[d.index] + ')')
+      .style('filter', (d) => 'drop-shadow(0 0 8px ' + colors[d.index] + ')')
       .attr('rx', 2)
       .attr('ry', 2)
       .on('mouseover', function(event, d) {

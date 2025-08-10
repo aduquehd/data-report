@@ -31,7 +31,6 @@ export default function Home() {
   const chartData = useMemo(() => {
     if (!parsedData) return null
 
-    const processed = parsedData.processed
     const dataLength = parsedData.data.length
 
     // For very large datasets, use sampled/aggregated data

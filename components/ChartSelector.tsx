@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React from 'react'
 import { Check } from 'lucide-react'
 
 export interface ChartOption {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import html2canvas from 'html2canvas';
+import JSZip from 'jszip';
 import { Download } from 'lucide-react';
 
 interface DownloadImagesButtonProps {
@@ -12,7 +13,7 @@ interface DownloadImagesButtonProps {
 export default function DownloadImagesButton({ chartIds, disabled }: DownloadImagesButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const downloadImage = async (element: HTMLElement, filename: string) => {
+  const captureChartAsBlob = async (element: HTMLElement): Promise<Blob | null> => {
     const canvas = await html2canvas(element, {
       scale: 2,
       backgroundColor: null, // Transparent to preserve the original background
@@ -37,46 +38,58 @@ export default function DownloadImagesButton({ chartIds, disabled }: DownloadIma
       }
     });
     
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        URL.revokeObjectURL(url);
-      }
-    }, 'image/png');
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, 'image/png');
+    });
   };
 
   const handleDownloadImages = async () => {
-    console.log('Download Images clicked');
-    console.log('Chart IDs:', chartIds);
     setIsDownloading(true);
     
     try {
       if (!chartIds || chartIds.length === 0) {
-        console.error('No chart IDs provided');
         alert('No charts available to download');
         return;
       }
 
+      // Create a new ZIP file
+      const zip = new JSZip();
+      const timestamp = new Date().toISOString().split('T')[0];
+      
+      // Process each chart
       for (const chartId of chartIds) {
-        console.log('Looking for element with ID:', chartId);
         const element = document.getElementById(chartId);
         if (element) {
-          console.log('Found element:', chartId);
           const chartName = chartId.replace('-chart', '').replace(/-/g, '_');
-          await downloadImage(element, `${chartName}_chart.png`);
-          // Add a small delay between downloads to prevent browser issues
-          await new Promise(resolve => setTimeout(resolve, 500));
-        } else {
-          console.warn('Element not found:', chartId);
+          const blob = await captureChartAsBlob(element);
+          
+          if (blob) {
+            // Add the image to the ZIP file
+            zip.file(`${chartName}_chart.png`, blob);
+          }
         }
       }
+      
+      // Generate the ZIP file
+      const zipBlob = await zip.generateAsync({
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: { level: 9 }
+      });
+      
+      // Download the ZIP file
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `charts_${timestamp}.zip`;
+      link.click();
+      URL.revokeObjectURL(url);
+      
     } catch (error) {
-      console.error('Error downloading images:', error);
-      alert('Failed to download images. Please try again.');
+      console.error('Error creating ZIP file:', error);
+      alert('Failed to download charts. Please try again.');
     } finally {
       setIsDownloading(false);
     }

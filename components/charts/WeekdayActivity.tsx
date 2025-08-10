@@ -194,7 +194,6 @@ export default function WeekdayActivity({
     const weekdayTotal = data.length - weekendTotal
     
     // Calculate number of unique dates for each day type
-    const uniqueDates = new Set(data.map(d => d3.timeDay(d.timestamp).toISOString()))
     const datesByDay = new Map<number, Set<string>>()
     for (let i = 0; i < 7; i++) {
       datesByDay.set(i, new Set())
