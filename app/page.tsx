@@ -8,19 +8,14 @@ import ExportButton from '@/components/ExportButton'
 import { ParsedData } from '@/lib/types'
 import { getDataSubset } from '@/lib/dataProcessor'
 
-const HourlyHistogram = dynamic(() => import('@/components/charts/HourlyHistogram'), { ssr: false })
-const DailyHistogram = dynamic(() => import('@/components/charts/DailyHistogram'), { ssr: false })
-const WeeklyPattern = dynamic(() => import('@/components/charts/WeeklyPattern'), { ssr: false })
-const Heatmap = dynamic(() => import('@/components/charts/Heatmap'), { ssr: false })
-const RadarChart = dynamic(() => import('@/components/charts/RadarChart'), { ssr: false })
-const BoxPlot = dynamic(() => import('@/components/charts/BoxPlot'), { ssr: false })
-const CumulativeLine = dynamic(() => import('@/components/charts/CumulativeLine'), { ssr: false })
-
-// New charts
-const RecordsPerDay = dynamic(() => import('@/components/charts/RecordsPerDay'), { ssr: false })
-const RecordsByHour = dynamic(() => import('@/components/charts/RecordsByHour'), { ssr: false })
 const ThirtyMinDistribution = dynamic(() => import('@/components/charts/ThirtyMinDistribution'), { ssr: false })
 const WeekdayActivity = dynamic(() => import('@/components/charts/WeekdayActivity'), { ssr: false })
+const RecordsPerDay = dynamic(() => import('@/components/charts/RecordsPerDay'), { ssr: false })
+const Heatmap = dynamic(() => import('@/components/charts/Heatmap'), { ssr: false })
+const BoxPlot = dynamic(() => import('@/components/charts/BoxPlot'), { ssr: false })
+const WeeklyPattern = dynamic(() => import('@/components/charts/WeeklyPattern'), { ssr: false })
+const RadarChart = dynamic(() => import('@/components/charts/RadarChart'), { ssr: false })
+const CumulativeLine = dynamic(() => import('@/components/charts/CumulativeLine'), { ssr: false })
 
 export default function Home() {
   const [parsedData, setParsedData] = useState<ParsedData | null>(null)
@@ -37,14 +32,14 @@ export default function Home() {
       return {
         histogram: parsedData.data, // Histograms can handle more data
         heatmap: getDataSubset(parsedData.data, 2000),
-        cumulative: processed?.sampled || getDataSubset(parsedData.data, 500),
+        cumulative: parsedData.data, // Use all data for accurate cumulative count
         default: parsedData.data
       }
     } else if (dataLength > 1000) {
       return {
         histogram: parsedData.data,
         heatmap: parsedData.data,
-        cumulative: getDataSubset(parsedData.data, 500),
+        cumulative: parsedData.data, // Use all data for accurate cumulative count
         default: parsedData.data
       }
     }
@@ -91,20 +86,15 @@ export default function Home() {
             <StatisticsPanel data={parsedData.data} />
 
             {chartData && (
-              <div id="charts-container">
+              <div id="charts-container" style={{ background: 'linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0f1419 100%)', padding: '20px', borderRadius: '12px' }}>
                 <div className="charts-grid">
-                  <HourlyHistogram data={chartData.histogram} />
-                  <DailyHistogram data={chartData.histogram} />
-                  <WeeklyPattern data={chartData.default} />
-                  <Heatmap data={chartData.heatmap} />
-                  <RadarChart data={chartData.default} />
-                  <BoxPlot data={chartData.default} />
-                  
-                  {/* New Analytics Charts */}
-                  <RecordsPerDay data={chartData.default} />
-                  <RecordsByHour data={chartData.histogram} />
                   <ThirtyMinDistribution data={chartData.histogram} />
                   <WeekdayActivity data={chartData.default} />
+                  <RecordsPerDay data={chartData.default} />
+                  <Heatmap data={chartData.heatmap} />
+                  <BoxPlot data={chartData.default} />
+                  <WeeklyPattern data={chartData.default} />
+                  <RadarChart data={chartData.default} />
                 </div>
                 <CumulativeLine data={chartData.cumulative} />
               </div>

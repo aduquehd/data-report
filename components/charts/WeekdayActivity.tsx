@@ -190,8 +190,24 @@ export default function WeekdayActivity({
     // Add weekend/weekday comparison
     const weekendTotal = weekdayData[0].count + weekdayData[6].count
     const weekdayTotal = data.length - weekendTotal
-    const weekendAvg = weekendTotal / 2
-    const weekdayAvg = weekdayTotal / 5
+    
+    // Calculate number of unique dates for each day type
+    const uniqueDates = new Set(data.map(d => d3.timeDay(d.timestamp).toISOString()))
+    const datesByDay = new Map<number, Set<string>>()
+    for (let i = 0; i < 7; i++) {
+      datesByDay.set(i, new Set())
+    }
+    data.forEach(d => {
+      const dayOfWeek = d.timestamp.getDay()
+      const dateStr = d3.timeDay(d.timestamp).toISOString()
+      datesByDay.get(dayOfWeek)?.add(dateStr)
+    })
+    
+    const weekendDays = (datesByDay.get(0)?.size || 0) + (datesByDay.get(6)?.size || 0)
+    const weekdayDays = Array.from({length: 5}, (_, i) => datesByDay.get(i + 1)?.size || 0).reduce((a, b) => a + b, 0)
+    
+    const weekendAvgPerDay = weekendDays > 0 ? weekendTotal / weekendDays : 0
+    const weekdayAvgPerDay = weekdayDays > 0 ? weekdayTotal / weekdayDays : 0
 
     const comparison = g.append('g')
       .attr('transform', `translate(${innerWidth + 10}, 20)`)
@@ -200,19 +216,19 @@ export default function WeekdayActivity({
       .style('fill', '#64748b')
       .style('font-size', '11px')
       .style('font-weight', 'bold')
-      .text('Average')
+      .text('Daily Avg')
 
     comparison.append('text')
       .attr('y', 15)
       .style('fill', '#00d4ff')
       .style('font-size', '10px')
-      .text(`Weekday: ${weekdayAvg.toFixed(0)}`)
+      .text(`Weekday: ${weekdayAvgPerDay.toFixed(0)}`)
 
     comparison.append('text')
       .attr('y', 30)
       .style('fill', '#ff00ff')
       .style('font-size', '10px')
-      .text(`Weekend: ${weekendAvg.toFixed(0)}`)
+      .text(`Weekend: ${weekendAvgPerDay.toFixed(0)}`)
 
     // Add sparklines for each day showing hourly distribution
     const sparklineHeight = 20

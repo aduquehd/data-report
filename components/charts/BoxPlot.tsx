@@ -29,12 +29,43 @@ export default function BoxPlot({
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
-    // Group data by day of week
+    // Group data by date and then by day of week to get daily counts
     const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-    const groupedData = d3.group(data, d => d.timestamp.getDay())
     
-    const boxData = Array.from(groupedData, ([day, values]) => {
-      const sorted = values.map(v => v.value).sort((a, b) => a - b)
+    // First, count records per day (date)
+    const dailyCounts = d3.rollup(
+      data,
+      v => v.length,
+      d => d3.timeDay(d.timestamp).toISOString()
+    )
+    
+    // Then group these daily counts by day of week
+    const dayOfWeekCounts = new Map<number, number[]>()
+    for (let i = 0; i < 7; i++) {
+      dayOfWeekCounts.set(i, [])
+    }
+    
+    dailyCounts.forEach((count, dateStr) => {
+      const date = new Date(dateStr)
+      const dayOfWeek = date.getDay()
+      dayOfWeekCounts.get(dayOfWeek)?.push(count)
+    })
+    
+    const boxData = Array.from(dayOfWeekCounts, ([day, counts]) => {
+      if (counts.length === 0) {
+        return {
+          day: weekDays[day],
+          dayIndex: day,
+          min: 0,
+          q1: 0,
+          median: 0,
+          q3: 0,
+          max: 0,
+          outliers: []
+        }
+      }
+      
+      const sorted = counts.sort((a, b) => a - b)
       const q1 = d3.quantile(sorted, 0.25) || 0
       const median = d3.quantile(sorted, 0.5) || 0
       const q3 = d3.quantile(sorted, 0.75) || 0

@@ -14,7 +14,7 @@ export default function ThirtyMinDistribution({
   dimensions = {
     width: 600,
     height: 350,
-    margin: { top: 20, right: 30, bottom: 60, left: 50 }
+    margin: { top: 50, right: 30, bottom: 60, left: 50 }
   }
 }: ThirtyMinDistributionProps) {
   const svgRef = useRef<SVGSVGElement>(null)
@@ -148,7 +148,7 @@ export default function ThirtyMinDistribution({
       .attr('class', 'axis')
       .call(d3.axisLeft(yScale))
 
-    // Add legend for time periods
+    // Add legend for time periods above the chart
     const legendData = [
       { label: 'Morning (6-12)', color: '#00d4ff' },
       { label: 'Afternoon (12-18)', color: '#00ff88' },
@@ -156,12 +156,13 @@ export default function ThirtyMinDistribution({
       { label: 'Night (22-6)', color: '#6366f1' }
     ]
 
-    const legend = g.append('g')
-      .attr('transform', `translate(${innerWidth - 120}, 10)`)
+    // Position legend above the chart area
+    const legend = svg.append('g')
+      .attr('transform', `translate(${margin.left + (innerWidth / 2) - 200}, 15)`)
 
     legendData.forEach((item, i) => {
       const legendRow = legend.append('g')
-        .attr('transform', `translate(0, ${i * 15})`)
+        .attr('transform', `translate(${i * 100}, 0)`)
 
       legendRow.append('rect')
         .attr('width', 10)
@@ -173,7 +174,7 @@ export default function ThirtyMinDistribution({
         .attr('x', 15)
         .attr('y', 9)
         .style('font-size', '10px')
-        .style('fill', '#64748b')
+        .style('fill', '#94a3b8')
         .text(item.label)
     })
 

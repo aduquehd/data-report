@@ -388,6 +388,29 @@
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
+  /* Loading Spinner */
+  .loading-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    border: 2px solid #0f1419;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Charts container for PDF export */
+  #charts-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
   /* Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 8px;
