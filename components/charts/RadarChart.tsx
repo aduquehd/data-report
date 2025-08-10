@@ -23,6 +23,9 @@ export default function RadarChart({
   useEffect(() => {
     if (!svgRef.current || data.length === 0) return
 
+    // Clean up any existing tooltips
+    d3.selectAll('.radar-tooltip').remove()
+
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
 
@@ -79,15 +82,63 @@ export default function RadarChart({
       .style('stroke', '#00d4ff')
       .style('stroke-width', 2)
 
-    // Add dots
+    // Add tooltip
+    const tooltip = d3.select('body').append('div')
+      .attr('class', 'radar-tooltip')
+      .style('position', 'absolute')
+      .style('visibility', 'hidden')
+      .style('background-color', 'rgba(0, 0, 0, 0.9)')
+      .style('color', '#00ff88')
+      .style('padding', '8px 12px')
+      .style('border-radius', '6px')
+      .style('font-size', '13px')
+      .style('border', '1px solid #00ff88')
+      .style('box-shadow', '0 4px 6px rgba(0, 255, 136, 0.3)')
+      .style('pointer-events', 'none')
+      .style('z-index', '1000')
+
+    // Add dots with hover effects
     g.selectAll('.radar-dot')
       .data(hourCounts)
       .enter().append('circle')
       .attr('class', 'radar-dot')
       .attr('cx', (d, i) => rScale(d) * Math.cos(angleSlice * i - Math.PI / 2))
       .attr('cy', (d, i) => rScale(d) * Math.sin(angleSlice * i - Math.PI / 2))
-      .attr('r', 3)
+      .attr('r', 4)
       .style('fill', '#00ff88')
+      .style('cursor', 'pointer')
+      .on('mouseover', function(event, d) {
+        const hour = hourCounts.indexOf(d)
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('r', 6)
+          .style('fill', '#00d4ff')
+          .style('filter', 'drop-shadow(0 0 8px rgba(0, 212, 255, 1))')
+        
+        tooltip
+          .style('visibility', 'visible')
+          .html(`
+            <strong>${hour}:00 - ${hour}:59</strong><br/>
+            Records: ${d}<br/>
+            ${((d / data.length) * 100).toFixed(1)}% of total
+          `)
+      })
+      .on('mousemove', function(event) {
+        tooltip
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 28) + 'px')
+      })
+      .on('mouseout', function(event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('r', 4)
+          .style('fill', '#00ff88')
+          .style('filter', 'none')
+        
+        tooltip.style('visibility', 'hidden')
+      })
 
     // Add hour labels
     g.selectAll('.hour-label')
@@ -100,6 +151,11 @@ export default function RadarChart({
       .style('text-anchor', 'middle')
       .style('font-size', '10px')
       .style('fill', '#64748b')
+
+    // Cleanup tooltip on unmount
+    return () => {
+      d3.selectAll('.radar-tooltip').remove()
+    }
 
   }, [data, dimensions])
 

@@ -40,7 +40,7 @@ export function useChartSelection() {
   }
 
   const getEnabledChartIds = () => {
-    return selectedCharts.filter(c => c.enabled).map(c => c.id)
+    return selectedCharts.filter(c => c.enabled).map(c => `${c.id}-chart`)
   }
 
   return {

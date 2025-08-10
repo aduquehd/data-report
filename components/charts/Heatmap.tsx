@@ -14,8 +14,8 @@ export default function Heatmap({
   data, 
   dimensions = {
     width: 600,
-    height: 350,
-    margin: { top: 50, right: 100, bottom: 80, left: 60 }
+    height: 380,
+    margin: { top: 80, right: 100, bottom: 80, left: 60 }
   }
 }: HeatmapProps) {
   const svgRef = useRef<SVGSVGElement>(null)
@@ -143,7 +143,7 @@ export default function Heatmap({
       .range([0, legendWidth])
 
     const legend = svg.append('g')
-      .attr('transform', `translate(${width - legendWidth - 20}, 20)`)
+      .attr('transform', `translate(${width - legendWidth - 40}, 25)`)
 
     // Create gradient for legend
     const legendGradient = svg.append('defs')
@@ -179,7 +179,9 @@ export default function Heatmap({
 
     // Legend title
     legend.append('text')
+      .attr('x', legendWidth / 2)
       .attr('y', -5)
+      .attr('text-anchor', 'middle')
       .text('Event Density')
       .style('font-size', '12px')
       .style('fill', '#00d4ff')
