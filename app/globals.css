@@ -332,16 +332,21 @@
 
   .tooltip {
     position: absolute;
-    padding: 10px;
-    background: rgba(15, 20, 25, 0.95);
-    border: 1px solid #00d4ff;
-    border-radius: 6px;
-    color: #e0e6ed;
-    font-size: 12px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.98), rgba(30, 41, 59, 0.98));
+    border: 1px solid rgba(0, 255, 136, 0.5);
+    border-radius: 8px;
+    color: #f0f9ff;
+    font-size: 13px;
+    font-weight: 500;
     pointer-events: none;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    box-shadow: 
+      0 0 20px rgba(0, 255, 136, 0.15),
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
     z-index: 100;
+    transition: opacity 0.2s ease;
   }
 
   /* Progress Bar */
