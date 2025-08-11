@@ -103,6 +103,45 @@ export default function ThirtyMinDistribution({
       .attr('opacity', d => d.isHalfHour ? 0.6 : 0.9)
       .attr('stroke', d => getColor(d.hour))
       .attr('stroke-width', 0.5)
+      .style('cursor', 'pointer')
+      .on('mouseover', function(event, d) {
+        // Highlight bar
+        d3.select(this)
+          .transition()
+          .duration(100)
+          .attr('opacity', 1)
+          .attr('stroke-width', 2)
+        
+        // Create tooltip
+        const tooltip = d3.select('body').append('div')
+          .attr('class', 'tooltip')
+          .style('opacity', 0)
+        
+        const nextInterval = d.interval < 47 ? intervalLabels[d.interval + 1] : '00:00'
+        
+        tooltip.transition()
+          .duration(200)
+          .style('opacity', 1)
+        
+        tooltip.html(`
+          <strong>${d.label} - ${nextInterval}</strong>
+          <span>Events: ${d.count.toLocaleString()}</span>
+          <span>Percentage: ${((d.count / data.length) * 100).toFixed(1)}%</span>
+        `)
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 28) + 'px')
+      })
+      .on('mouseout', function(event, d) {
+        // Reset bar
+        d3.select(this)
+          .transition()
+          .duration(100)
+          .attr('opacity', d.isHalfHour ? 0.6 : 0.9)
+          .attr('stroke-width', 0.5)
+        
+        // Remove tooltip
+        d3.selectAll('.tooltip').remove()
+      })
 
     // Add x-axis with selective labels (every 2 hours)
     g.append('g')

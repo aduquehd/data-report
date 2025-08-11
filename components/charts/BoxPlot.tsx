@@ -82,6 +82,7 @@ export default function BoxPlot({
         median,
         q3,
         max,
+        count: sorted.length,
         outliers: sorted.filter(v => v < min || v > max)
       }
     }).sort((a, b) => a.dayIndex - b.dayIndex)
@@ -116,7 +117,7 @@ export default function BoxPlot({
         .attr('stroke', '#00d4ff')
         .attr('stroke-width', 1)
 
-      // Box (q1 to q3)
+      // Box (q1 to q3) with hover
       g.append('rect')
         .attr('x', x)
         .attr('y', yScale(d.q3))
@@ -126,6 +127,47 @@ export default function BoxPlot({
         .attr('fill-opacity', 0.3)
         .attr('stroke', '#00d4ff')
         .attr('stroke-width', 2)
+        .style('cursor', 'pointer')
+        .on('mouseover', function(event) {
+          // Highlight box
+          d3.select(this)
+            .transition()
+            .duration(100)
+            .attr('fill-opacity', 0.5)
+            .attr('stroke-width', 3)
+          
+          // Create tooltip
+          const tooltip = d3.select('body').append('div')
+            .attr('class', 'tooltip')
+            .style('opacity', 0)
+          
+          tooltip.transition()
+            .duration(200)
+            .style('opacity', 1)
+          
+          tooltip.html(`
+            <strong>${d.day}</strong>
+            <span>Max: ${d.max.toFixed(2)}</span>
+            <span>Q3: ${d.q3.toFixed(2)}</span>
+            <span>Median: ${d.median.toFixed(2)}</span>
+            <span>Q1: ${d.q1.toFixed(2)}</span>
+            <span>Min: ${d.min.toFixed(2)}</span>
+            <span>Count: ${d.count.toLocaleString()}</span>
+          `)
+            .style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 28) + 'px')
+        })
+        .on('mouseout', function() {
+          // Reset box
+          d3.select(this)
+            .transition()
+            .duration(100)
+            .attr('fill-opacity', 0.3)
+            .attr('stroke-width', 2)
+          
+          // Remove tooltip
+          d3.selectAll('.tooltip').remove()
+        })
 
       // Median line
       g.append('line')

@@ -86,26 +86,49 @@ export default function RecordsPerDay({
       .attr('fill', 'url(#records-gradient)')
       .attr('stroke', '#00d4ff')
       .attr('stroke-width', 0.5)
+      .style('cursor', 'pointer')
       .on('mouseover', function(event, d) {
+        // Highlight bar
         d3.select(this)
+          .transition()
+          .duration(100)
           .attr('fill', '#00ff88')
           .attr('stroke', '#00ff88')
+          .attr('stroke-width', 1.5)
         
-        // Tooltip
+        // Create tooltip
         const tooltip = d3.select('body').append('div')
           .attr('class', 'tooltip')
           .style('opacity', 0)
         
-        tooltip.transition().duration(200).style('opacity', .9)
-        tooltip.html(`Date: ${d.date.toLocaleDateString()}<br/>Records: ${d.count}`)
+        // Calculate average for comparison
+        const avgCount = d3.mean(chartData, d => d.count) || 0
+        const percentOfAvg = ((d.count / avgCount - 1) * 100).toFixed(1)
+        const percentSign = d.count >= avgCount ? '+' : ''
+        
+        tooltip.transition()
+          .duration(200)
+          .style('opacity', 1)
+        
+        tooltip.html(`
+          <strong>${d.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</strong>
+          <span>Records: ${d.count.toLocaleString()}</span>
+          <span>Average: ${avgCount.toFixed(0)}</span>
+          <span>${percentSign}${percentOfAvg}% from avg</span>
+        `)
           .style('left', (event.pageX + 10) + 'px')
           .style('top', (event.pageY - 28) + 'px')
       })
       .on('mouseout', function() {
+        // Reset bar
         d3.select(this)
+          .transition()
+          .duration(100)
           .attr('fill', 'url(#records-gradient)')
           .attr('stroke', '#00d4ff')
+          .attr('stroke-width', 0.5)
         
+        // Remove tooltip
         d3.selectAll('.tooltip').remove()
       })
 

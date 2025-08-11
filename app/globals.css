@@ -45,7 +45,7 @@
 
   .header-content {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     gap: 1.5rem;
     flex-wrap: wrap;
@@ -386,6 +386,37 @@
   .grid line {
     stroke: #1e293b;
     stroke-opacity: 0.7;
+  }
+
+  /* D3 Tooltips */
+  .tooltip {
+    position: absolute;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(30, 41, 59, 0.95));
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 6px;
+    color: #f0f9ff;
+    font-size: 12px;
+    font-weight: 400;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+      0 0 20px rgba(0, 212, 255, 0.15),
+      0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    line-height: 1.4;
+  }
+
+  .tooltip strong {
+    color: #00ff88;
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .tooltip span {
+    display: block;
+    margin: 2px 0;
   }
 
   /* Chart Info Tooltips */

@@ -38,7 +38,7 @@ export default function Home() {
     if (dataLength > 5000) {
       return {
         histogram: parsedData.data, // Histograms can handle more data
-        heatmap: getDataSubset(parsedData.data, 2000),
+        heatmap: parsedData.data, // Heatmap needs all data for accurate counts
         cumulative: parsedData.data, // Use all data for accurate cumulative count
         default: parsedData.data
       }
