@@ -1059,42 +1059,6 @@
     font-weight: 600;
   }
 
-  /* Info section below dropdown */
-  .timezone-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background: rgba(0, 212, 255, 0.05);
-    border: 1px solid rgba(0, 212, 255, 0.2);
-    border-radius: 6px;
-  }
-
-  .timezone-current {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #e0e6ed;
-  }
-
-  .timezone-current svg {
-    color: #00d4ff;
-  }
-
-  .timezone-current strong {
-    color: #00ff88;
-    font-weight: 600;
-  }
-
-  .timezone-detected {
-    font-size: 0.75rem;
-    color: #64748b;
-  }
-
-  .timezone-detected strong {
-    color: #00d4ff;
-  }
 
   /* React Select Custom Classes */
   .timezone-select__menu {
@@ -1119,10 +1083,6 @@
     
     .timezone-meta {
       flex-wrap: wrap;
-    }
-    
-    .timezone-info {
-      font-size: 0.8rem;
     }
   }
 }

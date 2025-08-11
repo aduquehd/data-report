@@ -1,9 +1,9 @@
 'use client'
 
-import { Clock, Globe } from 'lucide-react'
+import { Globe } from 'lucide-react'
 import Select, { GroupBase, StylesConfig } from 'react-select'
 import { TIMEZONE_GROUPS, TIMEZONE_OPTIONS, TimezoneOption, getCurrentTimeInTimezone } from '@/lib/timezoneData'
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo } from 'react'
 
 interface TimezoneSelectorProps {
   selectedTimezone: string
@@ -120,21 +120,6 @@ const formatOptionLabel = (option: TimezoneOption) => {
 }
 
 export default function TimezoneSelector({ selectedTimezone, onTimezoneChange }: TimezoneSelectorProps) {
-  const [currentTime, setCurrentTime] = useState<string>('')
-  
-  // Update current time every minute
-  useEffect(() => {
-    const updateTime = () => {
-      const time = getCurrentTimeInTimezone(selectedTimezone)
-      setCurrentTime(time)
-    }
-    
-    updateTime()
-    const interval = setInterval(updateTime, 60000) // Update every minute
-    
-    return () => clearInterval(interval)
-  }, [selectedTimezone])
-  
   const selectedOption = useMemo(() => {
     return TIMEZONE_OPTIONS.find(tz => tz.value === selectedTimezone) || TIMEZONE_OPTIONS[0]
   }, [selectedTimezone])
@@ -144,11 +129,6 @@ export default function TimezoneSelector({ selectedTimezone, onTimezoneChange }:
       onTimezoneChange(option.value)
     }
   }
-  
-  // Get browser timezone name for display
-  const browserTimezone = useMemo(() => {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone
-  }, [])
   
   return (
     <div className="timezone-selector-section">
@@ -179,19 +159,6 @@ export default function TimezoneSelector({ selectedTimezone, onTimezoneChange }:
           }}
           classNamePrefix="timezone-select"
         />
-        
-        <div className="timezone-info">
-          <div className="timezone-current">
-            <Clock size={14} />
-            <span>Current time in {selectedOption.label}: </span>
-            <strong>{currentTime || 'Loading...'}</strong>
-          </div>
-          {selectedTimezone === 'browser' && (
-            <div className="timezone-detected">
-              <span>Detected browser timezone: <strong>{browserTimezone}</strong></span>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   )
