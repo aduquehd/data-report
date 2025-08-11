@@ -103,31 +103,6 @@ export default function ThirtyMinDistribution({
       .attr('opacity', d => d.isHalfHour ? 0.6 : 0.9)
       .attr('stroke', d => getColor(d.hour))
       .attr('stroke-width', 0.5)
-      .on('mouseover', function(event, d) {
-        d3.select(this)
-          .attr('opacity', 1)
-          .attr('stroke-width', 2)
-        
-        const tooltip = d3.select('body').append('div')
-          .attr('class', 'tooltip')
-          .style('opacity', 0)
-        
-        tooltip.transition().duration(200).style('opacity', .9)
-        tooltip.html(`
-          Interval: ${d.label} - ${intervalLabels[d.interval + 1] || '00:00'}<br/>
-          Records: ${d.count}<br/>
-          Percentage: ${((d.count / data.length) * 100).toFixed(1)}%
-        `)
-          .style('left', (event.pageX + 10) + 'px')
-          .style('top', (event.pageY - 28) + 'px')
-      })
-      .on('mouseout', function(event, d) {
-        d3.select(this)
-          .attr('opacity', d.isHalfHour ? 0.6 : 0.9)
-          .attr('stroke-width', 0.5)
-        
-        d3.selectAll('.tooltip').remove()
-      })
 
     // Add x-axis with selective labels (every 2 hours)
     g.append('g')
@@ -206,13 +181,10 @@ export default function ThirtyMinDistribution({
 
   return (
     <div id="thirty-min-chart" className="chart-container relative">
-      <div className="absolute top-4 right-4 z-10">
-        <div className="group relative">
-          <Info className="w-5 h-5 text-gray-500 hover:text-gray-300 cursor-help transition-colors" />
-          <div className="absolute right-0 top-full mt-2 px-3 py-2 bg-gray-900 text-gray-200 text-sm rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 shadow-lg border border-gray-700">
-            Analyzes activity patterns in 30-minute intervals throughout the day
-            <div className="absolute right-2 bottom-full w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-gray-900"></div>
-          </div>
+      <div className="chart-info-tooltip">
+        <Info size={14} />
+        <div className="tooltip-content">
+          Shows activity distribution in 30-minute intervals throughout a 24-hour period
         </div>
       </div>
       <h3 className="chart-title">Distribution Throughout Day (30-min intervals)</h3>

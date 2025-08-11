@@ -196,10 +196,10 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
     reader.readAsText(file)
   }, [processFile, processWithWorker])
 
-  const loadSampleData = useCallback(async () => {
+  const loadSampleData = useCallback(async (filename: string = '/sample-data-10k.csv') => {
     setIsLoading(true)
     try {
-      const response = await fetch('/sample-data.csv')
+      const response = await fetch(filename)
       const text = await response.text()
       processFile(text)
     } catch (error) {
@@ -242,17 +242,25 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
 
   return (
     <div className="upload-section">
-      <div className="upload-options">
+      <div className="sample-data-buttons">
         <button 
-          onClick={loadSampleData} 
+          onClick={() => loadSampleData('/sample-data-10k.csv')} 
           className="btn btn-primary"
           disabled={isLoading}
         >
-          {isLoading ? 'Loading...' : 'Load Sample Data'}
+          {isLoading ? 'Loading...' : 'Load Sample Data (10k)'}
         </button>
-        <div className="divider">
-          <span>OR</span>
-        </div>
+        <button 
+          onClick={() => loadSampleData('/sample-data-20k.csv')} 
+          className="btn btn-primary"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Loading...' : 'Load Sample Data (20k)'}
+        </button>
+      </div>
+      
+      <div className="divider">
+        <span>OR</span>
       </div>
 
       <div 

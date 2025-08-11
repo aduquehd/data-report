@@ -276,13 +276,10 @@ export default function WeekdayActivity({
 
   return (
     <div id="weekday-chart" className="chart-container relative">
-      <div className="absolute top-4 right-4 z-10">
-        <div className="group relative">
-          <Info className="w-5 h-5 text-gray-500 hover:text-gray-300 cursor-help transition-colors" />
-          <div className="absolute right-0 top-full mt-2 px-3 py-2 bg-gray-900 text-gray-200 text-sm rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 shadow-lg border border-gray-700">
-            Compares activity levels across weekdays and weekends with hourly patterns
-            <div className="absolute right-2 bottom-full w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-gray-900"></div>
-          </div>
+      <div className="chart-info-tooltip">
+        <Info size={14} />
+        <div className="tooltip-content">
+          Compares activity levels across different days of the week
         </div>
       </div>
       <h3 className="chart-title">Activity by Day of Week</h3>

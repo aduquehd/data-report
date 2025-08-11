@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import FileUpload from '@/components/FileUpload'
 import StatisticsPanel from '@/components/StatisticsPanel'
 import ExportButton from '@/components/ExportButton'
@@ -63,16 +64,28 @@ export default function Home() {
     <main className="min-h-screen">
       <div className="container">
         <header className="header">
-          <h1>Data Report Visualizer</h1>
-          <p className="subtitle">
-            Advanced timestamp data analysis and visualization
-          </p>
-          {parsedData && (
-            <p className="data-info">
-              Loaded {parsedData.data.length.toLocaleString()} records
-              {parsedData.data.length > 5000 && ' (visualizations optimized for performance)'}
-            </p>
-          )}
+          <div className="header-content">
+            <Image 
+              src="/images/logos/logo-medium.png" 
+              alt="Data Report Visualizer Logo" 
+              width={80} 
+              height={80}
+              className="logo"
+              priority
+            />
+            <div className="header-text">
+              <h1>Data Report Visualizer</h1>
+              <p className="subtitle">
+                Advanced timestamp data analysis and visualization
+              </p>
+              {parsedData && (
+                <p className="data-info">
+                  Loaded {parsedData.data.length.toLocaleString()} records
+                  {parsedData.data.length > 5000 && ' (visualizations optimized for performance)'}
+                </p>
+              )}
+            </div>
+          </div>
         </header>
 
         {!parsedData ? (
