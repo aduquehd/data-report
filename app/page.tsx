@@ -12,7 +12,7 @@ import ChartSelectorModal from '@/components/ChartSelectorModal'
 import { ParsedData } from '@/lib/types'
 import { getDataSubset } from '@/lib/dataProcessor'
 import { useChartSelection } from '@/lib/useChartSelection'
-import { Settings2 } from 'lucide-react'
+import { Settings2, Github, ExternalLink } from 'lucide-react'
 
 const ThirtyMinDistribution = dynamic(() => import('@/components/charts/ThirtyMinDistribution'), { ssr: false })
 const WeekdayActivity = dynamic(() => import('@/components/charts/WeekdayActivity'), { ssr: false })
@@ -62,6 +62,29 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
+      <div className="top-links-container">
+        <a 
+          href="https://www.aduquehd.com/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="link-button"
+          aria-label="Created by aduquehd"
+        >
+          <ExternalLink size={18} />
+          <span>Created by @aduquehd</span>
+        </a>
+        <a 
+          href="https://github.com/aduquehd/data-report" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="link-button"
+          aria-label="View on GitHub"
+        >
+          <Github size={18} />
+          <span>View on GitHub</span>
+        </a>
+      </div>
+      
       <div className="container">
         <header className="header">
           <div className="header-content">
@@ -77,6 +100,9 @@ export default function Home() {
               <h1>Data Report Visualizer</h1>
               <p className="subtitle">
                 Advanced timestamp data analysis and visualization
+              </p>
+              <p className="privacy-header">
+                Free, open source, and secure. All data is processed locally in your browser — no data is sent to any servers.
               </p>
               {parsedData && (
                 <p className="data-info">
