@@ -36,11 +36,11 @@ export default function CumulativeLine({
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
-    // Sort data by timestamp and calculate cumulative
+    // Sort data by timestamp and calculate cumulative count of records
     const sortedData = [...data].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
     let cumulative = 0
     const cumulativeData = sortedData.map(d => {
-      cumulative += d.value
+      cumulative += 1  // Count records, not sum values
       return {
         timestamp: d.timestamp,
         cumulative
@@ -218,7 +218,7 @@ export default function CumulativeLine({
               ${formatDateStringWithTimezone(d.timestamp, timezone, { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </div>
             <div style="color: #00ff88;">
-              Cumulative Value: <span style="font-weight: bold;">${d.cumulative.toLocaleString()}</span>
+              Cumulative Records: <span style="font-weight: bold;">${d.cumulative.toLocaleString()}</span>
             </div>
           `)
           .style('left', (event.pageX + 15) + 'px')
@@ -278,7 +278,7 @@ export default function CumulativeLine({
       .style('fill', '#9ca3af')
       .style('font-size', '14px')
       .style('font-weight', '500')
-      .text('Cumulative Value')
+      .text('Cumulative Records')
 
     // Cleanup tooltip on unmount
     return () => {
