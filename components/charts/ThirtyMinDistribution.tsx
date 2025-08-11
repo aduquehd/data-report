@@ -8,6 +8,7 @@ import { DataPoint, ChartDimensions } from '@/lib/types'
 interface ThirtyMinDistributionProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function ThirtyMinDistribution({ 
@@ -16,7 +17,8 @@ export default function ThirtyMinDistribution({
     width: 600,
     height: 350,
     margin: { top: 50, right: 30, bottom: 60, left: 50 }
-  }
+  },
+  timezone = 'browser'
 }: ThirtyMinDistributionProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 

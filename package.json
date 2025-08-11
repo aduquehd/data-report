@@ -10,6 +10,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/react-select": "^5.0.1",
     "clsx": "^2.1.1",
     "d3": "^7.9.0",
     "html2canvas": "^1.4.1",
@@ -20,6 +21,7 @@
     "papaparse": "^5.5.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-select": "^5.10.2",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {

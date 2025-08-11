@@ -8,6 +8,7 @@ import { DataPoint, ChartDimensions } from '@/lib/types'
 interface WeekdayActivityProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function WeekdayActivity({ 
@@ -16,7 +17,8 @@ export default function WeekdayActivity({
     width: 600,
     height: 350,
     margin: { top: 20, right: 100, bottom: 40, left: 60 }
-  }
+  },
+  timezone = 'browser'
 }: WeekdayActivityProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 

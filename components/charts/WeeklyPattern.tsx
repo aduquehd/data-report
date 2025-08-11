@@ -8,6 +8,7 @@ import { DataPoint, ChartDimensions } from '@/lib/types'
 interface WeeklyPatternProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function WeeklyPattern({ 
@@ -16,7 +17,8 @@ export default function WeeklyPattern({
     width: 600,
     height: 350,
     margin: { top: 20, right: 30, bottom: 40, left: 50 }
-  }
+  },
+  timezone = 'browser'
 }: WeeklyPatternProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 

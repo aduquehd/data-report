@@ -8,6 +8,7 @@ import { DataPoint, ChartDimensions } from '@/lib/types'
 interface RadarChartProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function RadarChart({ 
@@ -16,7 +17,8 @@ export default function RadarChart({
     width: 600,
     height: 350,
     margin: { top: 40, right: 40, bottom: 40, left: 40 }
-  }
+  },
+  timezone = 'browser'
 }: RadarChartProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 

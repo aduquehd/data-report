@@ -49,13 +49,15 @@ export function isDateTime(value: unknown): boolean {
 
 /**
  * Parse a datetime value into a Date object
+ * @param value - The value to parse
+ * @param timezone - The timezone to interpret the date in (default: 'browser')
  */
-export function parseDateTime(value: unknown): Date | null {
+export function parseDateTime(value: unknown, timezone: string = 'browser'): Date | null {
   if (!value) return null
   
   const strValue = String(value).trim()
   
-  // Check for Unix timestamps
+  // Check for Unix timestamps (always UTC)
   if (/^\d{10}$/.test(strValue)) {
     return new Date(parseInt(strValue) * 1000)
   }
@@ -63,26 +65,107 @@ export function parseDateTime(value: unknown): Date | null {
     return new Date(parseInt(strValue))
   }
   
-  // Try standard parsing
-  const date = new Date(strValue)
-  if (!isNaN(date.getTime())) {
-    return date
+  // If the string contains timezone info (Z or +/-), parse it directly
+  if (strValue.includes('Z') || /[+-]\d{2}:\d{2}/.test(strValue)) {
+    const date = new Date(strValue)
+    return !isNaN(date.getTime()) ? date : null
   }
   
-  // Try alternative formats
-  // MM/DD/YYYY or M/D/YYYY
-  const mmddyyyy = strValue.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(.*)$/)
-  if (mmddyyyy) {
-    const [, month, day, year, rest] = mmddyyyy
-    const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}${rest}`
-    const parsed = new Date(dateStr)
-    if (!isNaN(parsed.getTime())) {
-      return parsed
+  // For dates without timezone info, we need to interpret them in the selected timezone
+  if (timezone === 'browser') {
+    // Use browser's local timezone (JavaScript default behavior)
+    const date = new Date(strValue)
+    if (!isNaN(date.getTime())) {
+      return date
     }
+    
+    // Try alternative formats for browser timezone
+    const mmddyyyy = strValue.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(.*)$/)
+    if (mmddyyyy) {
+      const [, month, day, year, rest] = mmddyyyy
+      const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}${rest}`
+      const parsed = new Date(dateStr)
+      if (!isNaN(parsed.getTime())) {
+        return parsed
+      }
+    }
+    
+    return null
   }
   
-  return null
+  // For specific timezones, interpret the date string as being in that timezone
+  try {
+    // Parse date components from the string
+    let year: string, month: string, day: string, hour: string = '0', minute: string = '0', second: string = '0'
+    
+    // Try different date formats
+    const isoMatch = strValue.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}):(\d{2}))?/)
+    const usMatch = strValue.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?: (\d{1,2}):(\d{2})(?::(\d{2}))?)?/)
+    
+    if (isoMatch) {
+      [, year, month, day, hour = '0', minute = '0', second = '0'] = isoMatch
+    } else if (usMatch) {
+      [, month, day, year, hour = '0', minute = '0', second = '0'] = usMatch
+    } else {
+      // Fallback to browser parsing
+      const date = new Date(strValue)
+      if (!isNaN(date.getTime())) {
+        year = date.getFullYear().toString()
+        month = (date.getMonth() + 1).toString()
+        day = date.getDate().toString()
+        hour = date.getHours().toString()
+        minute = date.getMinutes().toString()
+        second = date.getSeconds().toString()
+      } else {
+        return null
+      }
+    }
+    
+    // Create a date string that explicitly sets the timezone
+    // Using a format that includes timezone will ensure correct interpretation
+    const dateInTz = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:${second.padStart(2, '0')}`)
+    
+    if (isNaN(dateInTz.getTime())) {
+      return null
+    }
+    
+    // The date is now in browser's local time, but we need to adjust it
+    // to represent the same wall clock time in the target timezone
+    
+    // Get the offset difference between browser timezone and target timezone
+    const browserOffset = dateInTz.getTimezoneOffset() // in minutes, negative for ahead of UTC
+    const targetOffset = getTimezoneOffsetForDate(dateInTz, timezone) // in minutes
+    const offsetDiff = browserOffset - targetOffset
+    
+    // Adjust the time by the offset difference
+    const adjustedDate = new Date(dateInTz.getTime() + offsetDiff * 60 * 1000)
+    
+    return adjustedDate
+  } catch (e) {
+    console.error('Error parsing date with timezone:', e)
+    // Fallback to simple parsing
+    const date = new Date(strValue)
+    return !isNaN(date.getTime()) ? date : null
+  }
 }
+
+/**
+ * Get timezone offset for a specific date in minutes
+ */
+function getTimezoneOffsetForDate(date: Date, timezone: string): number {
+  try {
+    // Format the date in the target timezone
+    const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }))
+    // Format the date in UTC
+    const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }))
+    // Calculate offset in minutes (positive means behind UTC)
+    return (utcDate.getTime() - tzDate.getTime()) / 60000
+  } catch (error) {
+    console.warn(`Invalid timezone ${timezone}, using default offset`)
+    return 0
+  }
+}
+
 
 /**
  * Detect datetime columns in a dataset

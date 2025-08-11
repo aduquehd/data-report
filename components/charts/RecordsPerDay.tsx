@@ -4,10 +4,12 @@ import { useEffect, useRef } from 'react'
 import * as d3 from 'd3'
 import { Info } from 'lucide-react'
 import { DataPoint, ChartDimensions } from '@/lib/types'
+import { formatDateStringWithTimezone } from '@/lib/timezoneUtils'
 
 interface RecordsPerDayProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function RecordsPerDay({ 
@@ -16,7 +18,8 @@ export default function RecordsPerDay({
     width: 1200,
     height: 350,
     margin: { top: 20, right: 30, bottom: 60, left: 60 }
-  }
+  },
+  timezone = 'browser'
 }: RecordsPerDayProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 
@@ -111,7 +114,7 @@ export default function RecordsPerDay({
           .style('opacity', 1)
         
         tooltip.html(`
-          <strong>${d.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</strong>
+          <strong>${formatDateStringWithTimezone(d.date, timezone, { weekday: 'short', month: 'short', day: 'numeric' })}</strong>
           <span>Records: ${d.count.toLocaleString()}</span>
           <span>Average: ${avgCount.toFixed(0)}</span>
           <span>${percentSign}${percentOfAvg}% from avg</span>
@@ -137,7 +140,7 @@ export default function RecordsPerDay({
       .attr('class', 'axis')
       .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale)
-        .tickFormat((d) => d3.timeFormat('%b %d')(d as Date))
+        .tickFormat((d) => formatDateStringWithTimezone(d as Date, timezone, { month: 'short', day: 'numeric' }))
         .ticks(d3.timeDay.every(Math.ceil(chartData.length / 10))))
       .selectAll('text')
       .style('text-anchor', 'end')
@@ -180,7 +183,7 @@ export default function RecordsPerDay({
       .style('font-size', '10px')
       .text(`Avg: ${avgCount.toFixed(0)}`)
 
-  }, [data, dimensions])
+  }, [data, dimensions, timezone])
 
   return (
     <div id="records-per-day-chart" className="chart-container full-width relative">

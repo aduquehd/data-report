@@ -4,10 +4,12 @@ import { useEffect, useRef } from 'react'
 import * as d3 from 'd3'
 import { Info } from 'lucide-react'
 import { DataPoint, ChartDimensions } from '@/lib/types'
+import { formatDateStringWithTimezone } from '@/lib/timezoneUtils'
 
 interface CumulativeLineProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function CumulativeLine({ 
@@ -16,7 +18,8 @@ export default function CumulativeLine({
     width: 1250,
     height: 350,
     margin: { top: 20, right: 30, bottom: 40, left: 80 }
-  }
+  },
+  timezone = 'browser'
 }: CumulativeLineProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 
@@ -212,7 +215,7 @@ export default function CumulativeLine({
         tooltip
           .html(`
             <div style="font-weight: bold; margin-bottom: 5px;">
-              ${d3.timeFormat('%B %d, %Y %H:%M')(d.timestamp)}
+              ${formatDateStringWithTimezone(d.timestamp, timezone, { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </div>
             <div style="color: #00ff88;">
               Cumulative Value: <span style="font-weight: bold;">${d.cumulative.toLocaleString()}</span>
@@ -227,7 +230,7 @@ export default function CumulativeLine({
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale)
-        .tickFormat((d) => d3.timeFormat('%b %d')(d as Date))
+        .tickFormat((d) => formatDateStringWithTimezone(d as Date, timezone, { month: 'short', day: 'numeric' }))
         .ticks(8))
 
     xAxis.select('.domain')
@@ -282,7 +285,7 @@ export default function CumulativeLine({
       d3.selectAll('.cumulative-tooltip').remove()
     }
 
-  }, [data, dimensions])
+  }, [data, dimensions, timezone])
 
   return (
     <div id="cumulative-chart" className="chart-container full-width relative">

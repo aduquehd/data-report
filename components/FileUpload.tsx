@@ -8,9 +8,10 @@ import { detectDateTimeColumn, parseDateTime } from '@/lib/dateTimeDetector'
 
 interface FileUploadProps {
   onDataLoaded: (data: ParsedData) => void
+  timezone?: string
 }
 
-export default function FileUpload({ onDataLoaded }: FileUploadProps) {
+export default function FileUpload({ onDataLoaded, timezone = 'browser' }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -54,7 +55,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
         }
         
         const filteredData = data.filter((row) => {
-          const dateValue = parseDateTime(row[dateTimeColumn])
+          const dateValue = parseDateTime(row[dateTimeColumn], timezone)
           return dateValue !== null
         }).map((row) => {
           // Find the first numeric column (excluding the datetime column)
@@ -69,7 +70,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
           
           return {
             ...row,
-            timestamp: parseDateTime(row[dateTimeColumn])!,
+            timestamp: parseDateTime(row[dateTimeColumn], timezone)!,
             value,
             dateTimeColumn, // Store which column was used
           }
@@ -94,7 +95,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
     }
 
     workerRef.current.postMessage({ csvText: text, action: 'parse' })
-  }, [onDataLoaded])
+  }, [onDataLoaded, timezone])
 
   const processFile = useCallback((text: string) => {
     setIsLoading(true)
@@ -134,7 +135,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
           }
           
           const filteredData = data.filter((row) => {
-            const dateValue = parseDateTime(row[dateTimeColumn])
+            const dateValue = parseDateTime(row[dateTimeColumn], timezone)
             return dateValue !== null
           }).map((row) => {
             // Find the first numeric column (excluding the datetime column)
@@ -149,7 +150,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
             
             return {
               ...row,
-              timestamp: parseDateTime(row[dateTimeColumn])!,
+              timestamp: parseDateTime(row[dateTimeColumn], timezone)!,
               value,
               dateTimeColumn, // Store which column was used
             }
@@ -178,7 +179,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
         },
       })
     }, 100)
-  }, [onDataLoaded])
+  }, [onDataLoaded, timezone])
 
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

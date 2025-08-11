@@ -8,6 +8,7 @@ import { DataPoint, ChartDimensions } from '@/lib/types'
 interface BoxPlotProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function BoxPlot({ 
@@ -16,7 +17,8 @@ export default function BoxPlot({
     width: 600,
     height: 350,
     margin: { top: 20, right: 30, bottom: 40, left: 50 }
-  }
+  },
+  timezone = 'browser'
 }: BoxPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 

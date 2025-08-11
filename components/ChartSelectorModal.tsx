@@ -15,7 +15,7 @@ export default function ChartSelectorModal({
   isOpen, 
   onClose, 
   selectedCharts,
-  onSave 
+  onSave
 }: ChartSelectorModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const [tempSelection, setTempSelection] = useState<ChartOption[]>(selectedCharts)

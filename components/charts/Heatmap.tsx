@@ -4,10 +4,12 @@ import { useEffect, useRef } from 'react'
 import * as d3 from 'd3'
 import { Info } from 'lucide-react'
 import { DataPoint, ChartDimensions } from '@/lib/types'
+import { formatDateStringWithTimezone } from '@/lib/timezoneUtils'
 
 interface HeatmapProps {
   data: DataPoint[]
   dimensions?: ChartDimensions
+  timezone?: string
 }
 
 export default function Heatmap({ 
@@ -16,7 +18,8 @@ export default function Heatmap({
     width: 600,
     height: 380,
     margin: { top: 80, right: 100, bottom: 80, left: 60 }
-  }
+  },
+  timezone = 'browser'
 }: HeatmapProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 
@@ -33,8 +36,20 @@ export default function Heatmap({
     const heatmapData: number[][] = Array(7).fill(null).map(() => Array(24).fill(0))
     
     data.forEach(d => {
-      const day = d.timestamp.getDay()
-      const hour = d.timestamp.getHours()
+      // Convert to selected timezone for display
+      let displayDate = d.timestamp
+      if (timezone !== 'browser') {
+        try {
+          // Parse the date in the selected timezone
+          const tzString = d.timestamp.toLocaleString('en-US', { timeZone: timezone })
+          displayDate = new Date(tzString)
+        } catch (error) {
+          console.warn(`Invalid timezone ${timezone}, using browser timezone instead`)
+          displayDate = d.timestamp
+        }
+      }
+      const day = displayDate.getDay()
+      const hour = displayDate.getHours()
       heatmapData[day][hour]++
     })
 
@@ -229,7 +244,7 @@ export default function Heatmap({
         .text(period.label)
     })
 
-  }, [data, dimensions])
+  }, [data, dimensions, timezone])
 
   return (
     <div id="heatmap-chart" className="chart-container relative">
