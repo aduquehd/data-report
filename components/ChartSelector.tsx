@@ -48,7 +48,7 @@ export default function ChartSelector({
   return (
     <div className={compact ? "chart-selector-compact" : "chart-selector"}>
       <div className="selector-header">
-        <h3>Select Charts to Display</h3>
+        <h2 className="selector-title">SELECT CHARTS TO DISPLAY</h2>
         <span className="chart-count">{enabledCount} of {selectedCharts.length} selected</span>
       </div>
       

@@ -134,11 +134,14 @@ export default function TimezoneSelector({ selectedTimezone, onTimezoneChange }:
     <div className="timezone-selector-section">
       <div className="section-header">
         <Globe size={18} />
-        <h3>TIMEZONE SETTING</h3>
+        <h2 className="section-title">TIMEZONE SETTING</h2>
         <span className="section-hint">Select timezone before loading data</span>
       </div>
       
       <div className="timezone-selector-container">
+        <label htmlFor="timezone-select-input" className="sr-only">
+          Select timezone for displaying dates
+        </label>
         <Select<TimezoneOption>
           value={selectedOption}
           onChange={handleChange}
@@ -158,6 +161,8 @@ export default function TimezoneSelector({ selectedTimezone, onTimezoneChange }:
             )
           }}
           classNamePrefix="timezone-select"
+          aria-label="Select timezone"
+          inputId="timezone-select-input"
         />
       </div>
     </div>
