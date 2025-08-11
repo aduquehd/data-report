@@ -152,7 +152,7 @@ export default function BoxPlot({
             <span>Median: ${d.median.toFixed(2)}</span>
             <span>Q1: ${d.q1.toFixed(2)}</span>
             <span>Min: ${d.min.toFixed(2)}</span>
-            <span>Count: ${d.count.toLocaleString()}</span>
+            <span>Count: ${d.count?.toLocaleString() ?? 'N/A'}</span>
           `)
             .style('left', (event.pageX + 10) + 'px')
             .style('top', (event.pageY - 28) + 'px')

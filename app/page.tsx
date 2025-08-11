@@ -10,7 +10,6 @@ import DownloadImagesButton from '@/components/DownloadImagesButton'
 import ChartSelector from '@/components/ChartSelector'
 import ChartSelectorModal from '@/components/ChartSelectorModal'
 import { ParsedData } from '@/lib/types'
-import { getDataSubset } from '@/lib/dataProcessor'
 import { useChartSelection } from '@/lib/useChartSelection'
 import { Settings2, Github, ExternalLink } from 'lucide-react'
 
