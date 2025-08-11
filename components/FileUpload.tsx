@@ -4,6 +4,7 @@ import { useCallback, useState, DragEvent, useEffect, useRef } from 'react'
 import Papa from 'papaparse'
 import { ParsedData } from '@/lib/types'
 import { processLargeDataset } from '@/lib/dataProcessor'
+import { detectDateTimeColumn, parseDateTime } from '@/lib/dateTimeDetector'
 
 interface FileUploadProps {
   onDataLoaded: (data: ParsedData) => void
@@ -41,12 +42,26 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
         setProgress(e.data.progress)
       } else if (e.data.complete) {
         const data = e.data.data as Record<string, unknown>[]
-        const filteredData = data.map((row) => {
-          // Find the first numeric column (excluding @timestamp)
+        
+        // Auto-detect datetime column
+        const dateTimeColumn = e.data.dateTimeColumn || detectDateTimeColumn(data)
+        
+        if (!dateTimeColumn) {
+          alert('No datetime column detected in the CSV file')
+          setIsLoading(false)
+          setProgress(0)
+          return
+        }
+        
+        const filteredData = data.filter((row) => {
+          const dateValue = parseDateTime(row[dateTimeColumn])
+          return dateValue !== null
+        }).map((row) => {
+          // Find the first numeric column (excluding the datetime column)
           let value = 1 // Default to 1 for counting occurrences
           
           for (const [key, val] of Object.entries(row)) {
-            if (key !== '@timestamp' && typeof val === 'number' && !isNaN(val)) {
+            if (key !== dateTimeColumn && typeof val === 'number' && !isNaN(val)) {
               value = val
               break
             }
@@ -54,8 +69,9 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
           
           return {
             ...row,
-            timestamp: new Date(row['@timestamp'] as string),
+            timestamp: parseDateTime(row[dateTimeColumn])!,
             value,
+            dateTimeColumn, // Store which column was used
           }
         })
 
@@ -107,16 +123,25 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
           // Use accumulated data if available, otherwise use results.data
           const data = allData.length > 0 ? allData : (results?.data || []) as Record<string, unknown>[]
           
+          // Auto-detect datetime column
+          const dateTimeColumn = detectDateTimeColumn(data)
+          
+          if (!dateTimeColumn) {
+            alert('No datetime column detected in the CSV file')
+            setIsLoading(false)
+            setProgress(0)
+            return
+          }
+          
           const filteredData = data.filter((row) => {
-            if (!row['@timestamp']) return false
-            const timestamp = new Date(row['@timestamp'] as string)
-            return !isNaN(timestamp.getTime())
+            const dateValue = parseDateTime(row[dateTimeColumn])
+            return dateValue !== null
           }).map((row) => {
-            // Find the first numeric column (excluding @timestamp)
+            // Find the first numeric column (excluding the datetime column)
             let value = 1 // Default to 1 for counting occurrences
             
             for (const [key, val] of Object.entries(row)) {
-              if (key !== '@timestamp' && typeof val === 'number' && !isNaN(val)) {
+              if (key !== dateTimeColumn && typeof val === 'number' && !isNaN(val)) {
                 value = val
                 break
               }
@@ -124,8 +149,9 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
             
             return {
               ...row,
-              timestamp: new Date(row['@timestamp'] as string),
+              timestamp: parseDateTime(row[dateTimeColumn])!,
               value,
+              dateTimeColumn, // Store which column was used
             }
           })
 
@@ -269,7 +295,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
                 disabled={isLoading}
               />
             </label>
-            <p className="upload-hint">CSV must contain an @timestamp column</p>
+            <p className="upload-hint">CSV must contain a datetime column (auto-detected)</p>
           </>
         )}
       </div>
