@@ -108,7 +108,6 @@ export default function Home() {
               {parsedData && (
                 <p className="data-info">
                   Loaded {parsedData.data.length.toLocaleString()} records
-                  {parsedData.data.length > 5000 && ' (visualizations optimized for performance)'}
                 </p>
               )}
             </div>
