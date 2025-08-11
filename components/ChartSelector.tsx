@@ -15,7 +15,6 @@ const defaultCharts: ChartOption[] = [
   { id: 'records-per-day', name: 'Records Per Day', enabled: true },
   { id: 'heatmap', name: 'Activity Heatmap', enabled: true },
   { id: 'boxplot', name: 'Value Distribution', enabled: true },
-  { id: 'weekly', name: 'Weekly Pattern', enabled: true },
   { id: 'radar', name: 'Radar Chart', enabled: true },
   { id: 'cumulative', name: 'Cumulative Timeline', enabled: true },
 ]

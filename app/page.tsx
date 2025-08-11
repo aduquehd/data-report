@@ -19,7 +19,6 @@ const WeekdayActivity = dynamic(() => import('@/components/charts/WeekdayActivit
 const RecordsPerDay = dynamic(() => import('@/components/charts/RecordsPerDay'), { ssr: false })
 const Heatmap = dynamic(() => import('@/components/charts/Heatmap'), { ssr: false })
 const BoxPlot = dynamic(() => import('@/components/charts/BoxPlot'), { ssr: false })
-const WeeklyPattern = dynamic(() => import('@/components/charts/WeeklyPattern'), { ssr: false })
 const RadarChart = dynamic(() => import('@/components/charts/RadarChart'), { ssr: false })
 const CumulativeLine = dynamic(() => import('@/components/charts/CumulativeLine'), { ssr: false })
 
@@ -173,9 +172,6 @@ export default function Home() {
                   )}
                   {selectedCharts.find(c => c.id === 'boxplot')?.enabled && (
                     <BoxPlot data={chartData.default} timezone={selectedTimezone} />
-                  )}
-                  {selectedCharts.find(c => c.id === 'weekly')?.enabled && (
-                    <WeeklyPattern data={chartData.default} timezone={selectedTimezone} />
                   )}
                   {selectedCharts.find(c => c.id === 'radar')?.enabled && (
                     <RadarChart data={chartData.default} timezone={selectedTimezone} />
